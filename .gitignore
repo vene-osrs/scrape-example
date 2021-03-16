@@ -1,0 +1,6 @@
+.idea
+queue_data.db
+logger.log
+.env
+output.log
+ghostdriver.log
