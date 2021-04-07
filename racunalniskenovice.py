@@ -4,6 +4,7 @@ from time import strptime
 from newspage import NewsPage
 
 
+# UPDATE THE CLASS TO THE WEBSITE NAME, SIMILAR AS THIS ONE
 class RacunalniskeNovice:
     news_page = None
     timezone = timezone("Europe/Ljubljana")
@@ -31,6 +32,8 @@ class RacunalniskeNovice:
             category = category[:-2]
             url_to_image = article.enclosure['url']
 
+            # !!!!! MAKE SURE THE DATE IS CONVERTED TO UTC !!!!!
+            # !!!!! MAKE SURE IT USES FORMAT: %Y-%m-%d %H:%M:%S !!!!!
             published_at = article.pubDate.get_text(strip=True)  # parse to db date time
             str_time = published_at.split(',')[1].split('+')[0]
             str_time = list(filter(None, str_time.split(' ')))
@@ -59,7 +62,7 @@ class RacunalniskeNovice:
                     for p in content_soap_two.find_all('p'):
                         content += p.get_text() + " "
 
-            self.news_page.add_article(
+            self.news_page.add_new_article(
                 title.strip(), content.strip(), url, published_at=published_at,
                 image_url=url_to_image, author=author, language=language, category=category
             )

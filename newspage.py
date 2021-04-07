@@ -23,8 +23,10 @@ class NewsPage:
     def __init__(self):
         pass
 
-    def add_article(self, title, content, url, published_at, author="", category="", language="", image_url=""):
-        article = [None, self.source_id, title, content, author, category, language, url, image_url, published_at]
+    def add_new_article(self, title, content, url, published_at, headline="", author="", category="", language="",
+                        image_url=""):
+        article = [None, self.source_id, title, headline, content, author, category, language, url, image_url,
+                   published_at]
         self.new_articles.append(article)
 
     def visit_main_url(self, parse_type='lxml'):
