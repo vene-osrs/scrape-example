@@ -24,6 +24,8 @@ class RacunalniskeNovice:
         for article in new_urls:
             url = article.link.get_text()
             title = article.title.get_text(strip=True)
+            description = article.description.get_text(strip=True)
+            description = self.news_page.get_bs_object(description, 'lxml').get_text(strip=True)
             category = ""
             categories = article.findAll('category')
             for c in categories:
@@ -63,11 +65,12 @@ class RacunalniskeNovice:
                         content += p.get_text() + " "
 
             self.news_page.add_new_article(
-                title.strip(), content.strip(), url, published_at=published_at,
+                title.strip(), content.strip(), url, published_at=published_at, headline=description,
                 image_url=url_to_image, author=author, language=language, category=category
             )
 
         print(f"There are {len(self.news_page.new_articles)} articles parsed.")
+        self.news_page.store_xls(__file__)
 
 
 app = RacunalniskeNovice()

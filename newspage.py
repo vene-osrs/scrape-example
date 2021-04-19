@@ -1,5 +1,6 @@
 import requests
 import time
+import pandas as pd
 from bs4 import BeautifulSoup
 from helpers import format_log
 
@@ -45,3 +46,40 @@ class NewsPage:
             return soup
         except:
             format_log("-- ERROR in %s retrieving content (ID: %s) --" % (__name__, self.source_id))
+
+    def get_bs_object(self, html, parse_type=None):
+        if parse_type is not None:
+            return BeautifulSoup(html, parse_type)
+
+        return BeautifulSoup(html)
+
+    def store_xls(self, source_provider):
+        # https://stackoverflow.com/questions/51394261/python-access-second-element-of-list
+        empty_fields = [item[0] for item in self.new_articles]
+        source_ids = [item[1] for item in self.new_articles]
+        titles = [item[2] for item in self.new_articles]
+        headlines = [item[3] for item in self.new_articles]
+        descriptions = [item[4] for item in self.new_articles]
+        authors = [item[5] for item in self.new_articles]
+        categories = [item[6] for item in self.new_articles]
+        languages = [item[7] for item in self.new_articles]
+        links = [item[8] for item in self.new_articles]
+        img_urls = [item[9] for item in self.new_articles]
+        dates = [item[10] for item in self.new_articles]
+
+        s1 = pd.Series(titles, name='Title')
+        s2 = pd.Series(headlines, name='Headline')
+        s3 = pd.Series(descriptions, name='Text')
+        s4 = pd.Series(authors, name='Author')
+        s5 = pd.Series(categories, name='Category')
+        s6 = pd.Series(languages, name='Language')
+        s7 = pd.Series(links, name='Link')
+        s8 = pd.Series(img_urls, name='Image')
+        s9 = pd.Series(dates, name='Date')
+
+        df1 = pd.concat([s1, s2, s3, s4, s5, s6, s7, s8, s9], axis=1)
+        df = df1.dropna()
+
+        writer = pd.ExcelWriter(f"{source_provider}.xlsx", engine='xlsxwriter')
+        df.to_excel(writer, index=False)
+        writer.save()
