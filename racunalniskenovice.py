@@ -7,7 +7,7 @@ from newspage import NewsPage
 # UPDATE THE CLASS TO THE WEBSITE NAME, SIMILAR AS THIS ONE
 class RacunalniskeNovice:
     news_page = None
-    timezone = timezone("Europe/Ljubljana")
+    timezone = timezone("Europe/Ljubljana")  # Make sure to use correct timezone! Usually its Europe/London for UTC.
 
     def __init__(self):
         self.news_page = NewsPage()
@@ -30,7 +30,8 @@ class RacunalniskeNovice:
 
         return content
 
-    def parse_article(self, article):
+    # Logic to parse stuff happens here.
+    def parse_article_data(self, article):
         language = "slovenščina"  # Can be hardcoded
         url = article.link.get_text()
         title = article.title.get_text(strip=True)
@@ -52,7 +53,7 @@ class RacunalniskeNovice:
         str_time[1] = strptime(str_time[1], '%b').tm_mon
         time_from_date = str_time.pop()
         date = "-".join(str(v) for v in str_time[::-1])
-        # Convert to UTC
+        # Convert to UTC (!!! WHEN IT'S NOT DEFINED AS UTC !!!)
         final_date = datetime.strptime(date + " " + time_from_date, "%Y-%m-%d %H:%M:%S")
         local_dt = self.timezone.localize(final_date, is_dst=None)
         published_at = local_dt.astimezone(time_utc).strftime('%Y-%m-%d %H:%M:%S')
@@ -72,6 +73,7 @@ class RacunalniskeNovice:
             image_url=url_to_image, author=author, language=language, category=category
         )
 
+    # Logic for class.
     def parse_news(self):
         self.news_page.visit_main_url(parse_type='xml')
         new_urls = []
@@ -82,7 +84,7 @@ class RacunalniskeNovice:
 
         # Go through all urls and parse them
         for article in new_urls:
-            self.parse_article(article)
+            self.parse_article_data(article)
 
         print(f"There are {len(self.news_page.new_articles)} articles parsed.")
         self.news_page.store_xls(__file__)
@@ -91,6 +93,10 @@ class RacunalniskeNovice:
 app = RacunalniskeNovice()
 
 try:
-    app.parse_news()
+    if app.news_page.custom_url is not None:
+        content = app.parse_text_content(app.news_page.custom_url)
+        app.news_page.update_existing_article(content)
+    else:
+        app.parse_news()
 except Exception as e:
     print(e)

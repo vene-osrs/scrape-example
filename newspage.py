@@ -20,6 +20,8 @@ class NewsPage:
     db_articles = None
     new_articles = []
     database = None
+    custom_url = None
+    custom_url_article_id = None
 
     def __init__(self):
         pass
@@ -46,6 +48,10 @@ class NewsPage:
             return soup
         except:
             format_log("-- ERROR in %s retrieving content (ID: %s) --" % (__name__, self.source_id))
+
+    def update_existing_article(self, content):
+        # Logic will be added later.
+        pass
 
     def get_bs_object(self, html, parse_type=None):
         if parse_type is not None:
