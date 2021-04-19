@@ -14,6 +14,7 @@ class RacunalniskeNovice:
         self.news_page.url = 'https://racunalniske-novice.com/feed/'
 
     # This is only used to get the text from url.
+    # IT MUST EXIST!
     # It can also be used to run it separately from 'parse_article' to get the article content.
     def parse_text_content(self, article_link_soup, url=None):
         if url is not None:
