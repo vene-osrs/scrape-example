@@ -95,7 +95,7 @@ app = RacunalniskeNovice()
 
 try:
     if app.news_page.custom_url is not None:
-        content = app.parse_text_content(app.news_page.custom_url)
+        content = app.parse_text_content(None, app.news_page.custom_url)
         app.news_page.update_existing_article(content)
     else:
         app.parse_news()
