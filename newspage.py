@@ -3,6 +3,7 @@ import time
 import pandas as pd
 from bs4 import BeautifulSoup
 from helpers import format_log
+from os import path
 
 
 class NewsPage:
@@ -86,6 +87,6 @@ class NewsPage:
         df1 = pd.concat([s1, s2, s3, s4, s5, s6, s7, s8, s9], axis=1)
         df = df1.dropna()
 
-        writer = pd.ExcelWriter(f"{source_provider}.xlsx", engine='xlsxwriter')
+        writer = pd.ExcelWriter(f"{path.splitext(source_provider)[0]}.xlsx", engine='xlsxwriter')
         df.to_excel(writer, index=False)
         writer.save()
