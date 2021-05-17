@@ -20,16 +20,16 @@ class RacunalniskeNovice:
         if url is not None:
             article_link_soup = self.news_page.get_url_content(url)
 
-        content = ""
+        article_content = ""
         if article_link_soup:
             content_soap = article_link_soup.find('div', class_='summary')
-            content = content_soap.get_text() + " "
+            article_content = content_soap.get_text() + " "
             content_soap_two = article_link_soup.find('div', class_='content')
             if content_soap_two:
                 for p in content_soap_two.find_all('p'):
-                    content += p.get_text() + " "
+                    article_content += p.get_text() + " "
 
-        return content
+        return article_content
 
     # Logic to parse stuff happens here.
     def parse_article_data(self, article):
@@ -67,10 +67,10 @@ class RacunalniskeNovice:
         if author_txt:
             author = author_txt.get_text(strip=True)
 
-        content = self.parse_text_content(article_link_soup)
+        article_content = self.parse_text_content(article_link_soup)
 
         self.news_page.add_new_article(
-            title.strip(), content.strip(), url, published_at=published_at, headline=description,
+            title.strip(), article_content.strip(), url, published_at=published_at, headline=description,
             image_url=url_to_image, author=author, language=language, category=category
         )
 
